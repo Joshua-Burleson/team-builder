@@ -1,9 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 function Form(props){
     //handle add
     const [newMember, updateMember] = useState({name:'', email:'', role:''});
     const handleChange= event => updateMember({...newMember, [event.target.name]: event.target.value});
+
+    useEffect(() => {
+        updateMember(props.editing);
+    })
 
     return (
         <form onSubmit={event => props.addMember(event, newMember)}>
