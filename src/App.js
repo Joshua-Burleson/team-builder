@@ -1,31 +1,55 @@
 import React, {useState} from 'react';
-// import logo from './logo.svg';
 import './App.css';
 import Form from './Form';
 
 function App() {
-  const [teamMembers, addMember] = useState([]);
-  const [memberToEdit, updateMemberToEdit] = useState({name:'', email:'', role:''});
+  const [teamMembers, setMembers] = useState([]);
+  const [memberToEdit, setMemberToEdit] = useState({name:'', email:'', role:''});
+  const [editing, setEdit] = useState(false);
   
   const addNewMember = (event, newMember) => {
     event.preventDefault();
-    addMember([...teamMembers, newMember])
+    setMembers([...teamMembers, newMember])
   };
 
 
-  const editMember = member => {
-    updateMemberToEdit(teamMembers[member])
+  const selectMemberToEdit = index => {
+    setEdit(true);
+    setMemberToEdit({...teamMembers[index], index});
   }
+
+  const editMember = (event, member) => {
+    const {name, email, role} = member;
+    event.preventDefault();
+    teamMembers[member.index] = {name, email, role};
+    setMembers([...teamMembers]);
+  };
 
 
   return (
     <div className="App">
-      Hello
-      {console.log(teamMembers)}
-      <ul>
-        {teamMembers && teamMembers.map((member, index) => <li>{`Name: ${member.name} E-Mail: ${member.email} Role: ${member.role}`} <button onClick={event => editMember(index)}>Edit</button></li>)}
-      </ul>
-      <Form addMember={addNewMember} editing={memberToEdit} />
+      Assemble Your Team!
+      <table>
+        <caption>Team Members</caption>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td>E-Mail</td>
+            <td>Role</td>
+          </tr>
+          {teamMembers && teamMembers.map((member, index) => {
+            return (
+              <tr>
+              <td>{member.name}</td>
+              <td>{member.email}</td>
+              <td>{member.role}</td>
+              <td><button onClick={event => selectMemberToEdit(index)}>Edit</button></td>
+            </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      <Form addMember={addNewMember} memberToEdit={memberToEdit} editMember={editMember} editing={editing }/>
     </div>
   );
 }

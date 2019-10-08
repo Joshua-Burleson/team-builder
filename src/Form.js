@@ -1,21 +1,30 @@
 import React, {useState, useEffect} from 'react';
 
 function Form(props){
-    //handle add
+
     const [newMember, updateMember] = useState({name:'', email:'', role:''});
     const handleChange= event => updateMember({...newMember, [event.target.name]: event.target.value});
 
+
+    const handleSubmit = event => {
+        updateMember({name:'', email:'', role:''});
+        return props.editing ? props.editMember(event, newMember) : props.addMember(event, newMember);
+    }
+
     useEffect(() => {
-        updateMember(props.editing);
-    })
+        updateMember(props.memberToEdit);
+    }, [props.memberToEdit])
 
     return (
-        <form onSubmit={event => props.addMember(event, newMember)}>
-            <input type="text" name="name" value={newMember.name || props.editing.name} onChange={event => handleChange(event)} />
+        <form onSubmit={event => handleSubmit(event)}>
+            <label htmlFor="name">Name: </label>
+            <input type="text" id="name" name="name" value={newMember.name || props.memberToEdit.name} onChange={event => handleChange(event)} />
             <br />
-            <input type="email" name="email" value={newMember.email || props.editing.role} onChange={event => handleChange(event)} />
+            <label htmlFor="email">E-Mail: </label>
+            <input type="email" id="email" name="email" value={newMember.email || props.memberToEdit.role} onChange={event => handleChange(event)} />
             <br />
-            <input type="text" name="role" value={newMember.role || props.editing.role} onChange={event => handleChange(event)} />
+            <label htmlFor="role">Role: </label>
+            <input type="text" id="role" name="role" value={newMember.role || props.memberToEdit.role} onChange={event => handleChange(event)} />
             <br />
             <input type="submit" />
         </form>
